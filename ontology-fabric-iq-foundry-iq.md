@@ -1,9 +1,9 @@
-# Ontology in Microsoft IQ — A Plain-English Technical Guide
+# Ontology in Microsoft IQ — Technical Documentation
 
-> **Covers:** Microsoft Fabric IQ · Microsoft Foundry IQ  
-> **Who this is for:** Anyone curious about how Microsoft's AI products understand your business data — no prior knowledge needed.  
+> **Scope:** Microsoft Fabric IQ · Microsoft Foundry IQ  
+> **Audience:** Data Engineers · Solution Architects · AI/ML Engineers  
 > **Status:** Fabric IQ Ontology — Public Preview (May 2026) · Foundry IQ — Public Preview (GA planned Q2 2026)  
-> **Official Docs:** [Fabric IQ](https://learn.microsoft.com/en-us/fabric/iq/overview) · [Foundry IQ](https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/what-is-foundry-iq)
+> **Sources:** [Microsoft Learn – Fabric IQ](https://learn.microsoft.com/en-us/fabric/iq/overview) · [Microsoft Learn – Foundry IQ](https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/what-is-foundry-iq)
 
 ---
 
@@ -28,36 +28,32 @@
   - [4.4 Supported Knowledge Sources](#44-supported-knowledge-sources)
   - [4.5 Integration Code Example](#45-integration-code-example)
   - [4.6 Security and Governance](#46-security-and-governance)
-- [5. Fabric IQ vs Foundry IQ — Side-by-Side Comparison](#5-fabric-iq-vs-foundry-iq--side-by-side-comparison)
+- [5. Fabric IQ vs Foundry IQ — Direct Comparison](#5-fabric-iq-vs-foundry-iq--direct-comparison)
 - [6. How They Work Together](#6-how-they-work-together)
-- [7. Decision Guide — Which Layer Do I Need?](#7-decision-guide--which-layer-do-i-need)
-- [8. References](#8-references)
+- [7. Decision Guide — Which Layer for Which Problem?](#7-decision-guide--which-layer-for-which-problem)
+- [References](#references)
 
 ---
 
 ## 1. What Is an Ontology?
 
-Think of an ontology as a **shared dictionary for your business — one that machines can read and reason with**, not just humans.
+An **ontology** is a formal, machine-readable specification of:
 
-More precisely, an ontology is a formal, machine-readable specification of four things:
-
-1. **Concepts / Entities** — the things that exist in your business domain (e.g. Customer, Order, Shipment)
-2. **Properties** — the attributes of those things (e.g. `Customer.email`, `Shipment.status`)
-3. **Relationships** — how things connect (e.g. *Customer places Order*)
-4. **Rules / Constraints** — what is valid, required, or impossible (e.g. `Order.amount` must be greater than 0)
+1. **Concepts / Entities** — the things that exist in a domain (Customer, Order, Shipment)
+2. **Properties** — the attributes of those things (Customer.email, Shipment.status)
+3. **Relationships** — how things connect to each other (Customer *places* Order)
+4. **Rules / Constraints** — what is valid, required, or impossible (Order.amount must be > 0)
 
 ### What an Ontology Is NOT
 
-It's easy to confuse an ontology with similar-sounding things. Here's the difference:
-
 | Not This | Why It Falls Short |
 |---|---|
-| A glossary | Just plain text — not queryable, not machine-readable |
-| A data dictionary | Describes database columns, not business concepts |
-| A database schema | Structural only — no business meaning attached |
+| A glossary | Plain text — not queryable, not machine-readable |
+| A data dictionary | Describes columns, not business concepts |
+| A database schema | Structural, not semantic — no business meaning |
 | A taxonomy | Hierarchy only — no relationships or rules |
 
-An ontology combines all four of those things and makes them **live, queryable, and accessible to AI agents**.
+An ontology is all four of those things **combined**, made **live, queryable, and agent-accessible**.
 
 ### Why It Matters for AI
 
@@ -67,9 +63,9 @@ When a user asks Copilot *"What is our revenue this quarter?"*, the AI faces thr
 - **Our** — which business unit or subsidiary?
 - **This quarter** — fiscal or calendar? which fiscal year start?
 
-**Without an ontology**, the AI guesses. The failure mode is silent: a confident answer that is confidently *wrong*.
+Without an ontology, the AI **guesses**. The failure mode is silent: a confident answer that is confidently wrong.
 
-**With an ontology**, every term has one formal definition that both humans and machines share.
+With an ontology, every term has one formal definition accessible by both humans and machines.
 
 ```
 "Better context = better AI.
@@ -80,28 +76,26 @@ When a user asks Copilot *"What is our revenue this quarter?"*, the AI faces thr
 
 ## 2. What Is Microsoft IQ?
 
-> ⚠️ **Common confusion:** "Foundry IQ" is a Microsoft product — it is **not** Palantir Foundry. Both Fabric IQ and Foundry IQ are Microsoft products from the same IQ family, announced at **Microsoft Ignite 2025**.
+> ⚠️ **Note:** "Foundry IQ" is a Microsoft product — it is **not** Palantir Foundry. Both are Microsoft products from the same IQ family, announced at **Microsoft Ignite 2025**.
 
 Microsoft IQ is a unified intelligence stack made up of three complementary layers:
 
-| IQ Layer | Platform | What Kind of Intelligence |
+| IQ Layer | Platform | Intelligence Type |
 |---|---|---|
 | **Fabric IQ** | Microsoft Fabric / OneLake | Structured data — ontologies, semantic models, graphs |
 | **Foundry IQ** | Azure AI Foundry | Unstructured documents — policies, manuals, contracts |
 | **Work IQ** | Microsoft 365 | Collaboration signals — emails, chats, meetings |
 
-> These three layers are **not alternatives to each other** — they solve different problems and are designed to work together. This document covers **Fabric IQ** and **Foundry IQ**.
+> These three layers are **not alternatives** — they solve different problems and are designed to work together. This document covers **Fabric IQ** and **Foundry IQ**.
 
 ---
 
 ## 3. Fabric IQ — The Structured Data Ontology
 
-Fabric IQ is an intelligence workload inside **Microsoft Fabric** that introduces a formal **Ontology item** — a live, governed semantic layer that sits on top of your structured data in OneLake.
+Fabric IQ is an intelligence workload inside **Microsoft Fabric** that introduces a formal **Ontology item** — a live, governed semantic layer sitting on top of your structured data in OneLake.
 
-**In Microsoft's own words:**
-> *The Ontology item digitally represents the enterprise vocabulary and semantic layer that unifies meaning across domains and OneLake sources. It defines enterprise concepts as entity types (like Customer), properties (like a Customer's name and email), and relationships (like Customer places Order), while clarifying the constraints of these terms. Both humans and AI agents can use this language for cross-domain reasoning and decision-ready actions.*
-
-In plain terms: instead of AI agents querying raw tables and guessing what columns mean, they query a governed, business-meaningful layer that *knows* what a Customer is, what revenue means, and how Orders relate to Shipments.
+> **Official Definition (Microsoft Learn):**  
+> *The Ontology (preview) item digitally represents the enterprise vocabulary and semantic layer that unifies meaning across domains and OneLake sources. It defines enterprise concepts as entity types (like Customer), properties (like a Customer's name and email), and relationships (like Customer places Order), while clarifying the constraints of these terms. Both humans and AI agents can use this language for cross-domain reasoning and decision-ready actions.*
 
 ---
 
@@ -128,18 +122,11 @@ In plain terms: instead of AI agents querying raw tables and guessing what colum
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-The four core concepts are:
-
-- **Entity Types** — the reusable logical models of real-world business concepts
-- **Properties** — the attributes of each entity
-- **Relationship Types** — how entities connect to each other (giving the ontology its graph structure)
-- **Data Bindings** — the technical bridges that connect abstract definitions to live data in OneLake
-
 ---
 
 ### 3.2 Entity Types
 
-An **entity type** is the reusable logical model of a real-world concept. It standardises the name, description, identifiers, properties, and constraints so that every team means the same thing when they say "Customer" — regardless of which system the data comes from.
+An **entity type** is the reusable logical model of a real-world concept. It standardises the name, description, identifiers, properties, and constraints so that every team means the same thing when they use a term like "Customer".
 
 ```yaml
 # Entity Type definition (conceptual)
@@ -198,16 +185,11 @@ Customer
     AND   TempSensor.timestamp = TODAY
 ```
 
-Without declared relationships in the ontology, an AI agent would have no way to know these four tables are connected — it would have to guess, or you would have to spell it out every time.
-
 ---
 
 ### 3.5 Data Bindings
 
-A **data binding** is the technical bridge that connects an abstract ontology definition to live data in OneLake.
-
-Without a binding, an entity type is just a schema definition on paper.  
-With a binding, it becomes a **live, queryable business object**.
+A **data binding** is the technical bridge that connects an abstract ontology definition to live data in OneLake. Without a binding, an entity type is just a schema definition. With a binding, it becomes a **live, queryable business object**.
 
 ```yaml
 # Data Binding: Shipment entity → multiple OneLake sources
@@ -236,7 +218,7 @@ EntityType: Shipment
     - scheduledDate:  not-past
 ```
 
-**Three source types are supported:**
+**Binding supports three source types:**
 
 | Source | Type | Use Case |
 |---|---|---|
@@ -278,7 +260,7 @@ For organisations without existing Power BI models, **Ontology Manager** provide
 
 ### 3.7 Full Fabric IQ Architecture
 
-The Ontology is the **foundation** that every other Fabric IQ item builds on:
+Every item in the Fabric IQ workload depends on the Ontology as its foundation:
 
 ```
                     ┌─────────────────┐
@@ -302,16 +284,14 @@ The Ontology is the **foundation** that every other Fabric IQ item builds on:
 | **Ontology** | Central semantic layer | Defines all entity types, properties, relationships, bindings |
 | **Semantic Model** | Trusted BI definitions | Source for auto-generation; keeps KPIs consistent |
 | **Graph** | Relationship traversal | Ontology declares what connects; Graph computes traversals |
-| **Data Agent** | Natural language → ontology query | Resolves plain-English questions into precise ontology queries |
+| **Data Agent** | NL-to-ontology query | Resolves natural language into precise ontology queries |
 | **Operations Agent** | Real-time monitoring + actions | Fires governed actions when ontology property rules are breached |
 | **Plan** | Planning + forecasting | Uses ontology entities as planning objects with writeback |
 | **Fabric Activator** | Event-driven trigger | Ontology rules define conditions; Activator fires alerts |
 
 ---
 
-### 3.8 End-to-End Example Flow
-
-Here's what actually happens when a user asks a question through Fabric IQ:
+### 3.8 End-to-End Technical Flow
 
 ```
 Question: "Which customers are at risk of a cold chain breach today?"
@@ -382,11 +362,10 @@ STEP 5 — GROUNDED ANSWER
 
 ### 4.1 The Problem It Solves
 
-Before Foundry IQ, every team building an AI agent over company documents had to rebuild the entire retrieval pipeline from scratch — custom connectors, custom chunking, custom embeddings, custom routing — and they each did it inconsistently.
-
-**The old approach (per-agent, per-project):**
+Before Foundry IQ, every team building an AI agent over company documents had to rebuild the entire retrieval pipeline from scratch:
 
 ```
+Old approach (per-agent, per-project):
   Agent A:  [custom connectors] → [custom chunking] → [custom embeddings] → [custom routing]
   Agent B:  [custom connectors] → [custom chunking] → [custom embeddings] → [custom routing]
   Agent C:  [custom connectors] → [custom chunking] → [custom embeddings] → [custom routing]
@@ -394,11 +373,11 @@ Before Foundry IQ, every team building an AI agent over company documents had to
              ▲ inconsistent      ▲ inconsistent         ▲ inconsistent        ▲ inconsistent
 ```
 
-**The Foundry IQ approach — define it once, share it everywhere:**
+**Foundry IQ approach:**
 
 ```
-  KnowledgeBase ──────────────────────────────────────────────────►
-     │                                                            │
+  Define knowledge base once:
+    KnowledgeBase ──────────────────────────────────────────────►
      ├── SharePoint (policies)                              Agent A
      ├── Blob Storage (manuals)                             Agent B
      ├── OneLake (Fabric IQ structured data)                Agent C
@@ -408,8 +387,6 @@ Before Foundry IQ, every team building an AI agent over company documents had to
 ---
 
 ### 4.2 Knowledge Base Architecture
-
-A Knowledge Base is a managed container that connects to your document sources, indexes them automatically, and makes them queryable by any agent.
 
 ```yaml
 # Knowledge Base (conceptual structure)
@@ -424,7 +401,7 @@ KnowledgeBase: "procurement-policies-kb"
       indexer:    auto                          # chunking + vectorisation
       schedule:   incremental-refresh-24h
       enrichment: AzureContentUnderstanding     # layout-aware: tables, headers
-      permissions: Entra-ID-document-level      # user sees only what they're allowed to
+      permissions: Entra-ID-document-level      # per-user document ACL enforcement
 
     # Source 2 — Indexed
     - type:       AzureBlobStorage
@@ -451,7 +428,7 @@ KnowledgeBase: "procurement-policies-kb"
 
 ### 4.3 Agentic Retrieval Engine
 
-The agentic retrieval engine treats retrieval as a **multi-step reasoning task**, not a single keyword lookup. Here's the full flow for a complex question:
+The agentic retrieval engine treats retrieval as a **multi-step reasoning task**, not a single keyword lookup.
 
 ```
 Query: "What does our Q4 procurement policy say about single-source suppliers from Germany?"
@@ -591,7 +568,7 @@ Authorization: Bearer <Entra-ID-token>
 
 ---
 
-## 5. Fabric IQ vs Foundry IQ — Side-by-Side Comparison
+## 5. Fabric IQ vs Foundry IQ — Direct Comparison
 
 | Dimension | Fabric IQ Ontology | Foundry IQ Knowledge Base |
 |---|---|---|
@@ -613,15 +590,13 @@ Authorization: Bearer <Entra-ID-token>
 
 ## 6. How They Work Together
 
-OneLake (Fabric IQ) is a **native knowledge source** in Foundry IQ. This means a single AI agent can simultaneously:
+OneLake (Fabric IQ) is a **native knowledge source** in Foundry IQ, meaning a single agent can simultaneously:
 
-- Query the **Fabric IQ Ontology** for structured entity facts (numbers, statuses, relationships)
-- Query the **Foundry IQ Knowledge Base** for relevant policy or document content
+- Query the **Fabric IQ Ontology** for structured entity facts
+- Query the **Foundry IQ Knowledge Base** for relevant policy/document content
 - Combine both into one grounded, cited answer
 
 ### Combined Agent Example
-
-Here's what that looks like end-to-end:
 
 ```
 Question: "Is Supplier XYZ compliant with our Q4 procurement policy?"
@@ -695,7 +670,7 @@ Question: "Is Supplier XYZ compliant with our Q4 procurement policy?"
 
 ---
 
-## 7. Decision Guide — Which Layer Do I Need?
+## 7. Decision Guide — Which Layer for Which Problem?
 
 | Problem / Use Case | Use This Layer | Why |
 |---|---|---|
@@ -712,7 +687,7 @@ Question: "Is Supplier XYZ compliant with our Q4 procurement policy?"
 
 ---
 
-## 8. References
+## References
 
 | Resource | URL |
 |---|---|
